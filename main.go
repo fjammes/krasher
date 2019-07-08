@@ -27,15 +27,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	//
-	// Uncomment to load all auth plugins
-	// _ "k8s.io/client-go/plugin/pkg/client/auth"
-	//
-	// Or uncomment to load specific auth plugins
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/azure"
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/oidc"
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/openstack"
 )
 
 func main() {
@@ -72,18 +63,18 @@ func main() {
 			// Todo remove for with count switch
 			for i := 0; i < 2; i++ {
 				podname = fmt.Sprintf("xrootd-mgr-%d", i)
-				pod, err_get := clientset.CoreV1().Pods(namespace).Get(podname, metav1.GetOptions{})
-				if err_get != nil {
-					panic(err_get.Error())
+				pod, errGet := clientset.CoreV1().Pods(namespace).Get(podname, metav1.GetOptions{})
+				if errGet != nil {
+					panic(errGet.Error())
 				}
 				fmt.Printf("%v %v\n", pod.GetName(), pod.Status.Phase)
 				// TODO test phase,
 			}
 		}
 
-		err_del := clientset.CoreV1().Pods(namespace).Delete(podname, &metav1.DeleteOptions{})
-		if err_del != nil {
-			panic(err_del.Error())
+		errDel := clientset.CoreV1().Pods(namespace).Delete(podname, &metav1.DeleteOptions{})
+		if errDel != nil {
+			panic(errDel.Error())
 		}
 		fmt.Printf("Killed pod %v\n", podname)
 
