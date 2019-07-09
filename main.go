@@ -15,11 +15,13 @@ import (
 
 func main() {
 	var kubeconfig *string
-	if home := homeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "kind-config-qserv"), "(optional) absolute path to the kubeconfig file")
-	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+
+	kubeconfig := os.Getenv("KUBECONFIG")
+	if kubeconfig == "" {
+		home := os.Getenv("HOME")
+		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file, superseded by KUBECONFIG env variable")
 	}
+
 	flag.Parse()
 
 	// use the current context in kubeconfig
@@ -52,7 +54,12 @@ func main() {
 					panic(errGet.Error())
 				}
 				fmt.Printf("%v %v\n", pod.GetName(), pod.Status.Phase)
-				// TODO test phase,
+				if pod.Status.Phase == "Running" {
+					running[i] = true
+				}
+				else {
+					running[i] = false
+				}
 			}
 		}
 
@@ -77,10 +84,3 @@ func main() {
 // func killContainer(c *Clientset, namespace string, podname string) {
 // 	err := c.CoreV1().Pods(namespace).Delete(podname, &metav1.DeleteOptions{})
 // }
-
-func homeDir() string {
-	if h := os.Getenv("HOME"); h != "" {
-		return h
-	}
-	return os.Getenv("USERPROFILE") // windows
-}
