@@ -55,10 +55,12 @@ func main() {
 				}
 				fmt.Printf("%v %v\n", pod.GetName(), pod.Status.Phase)
 				if pod.Status.Phase == "Running" {
+					fmt.Printf("true\n")
 					running[i] = true
 				}
 				else {
 					running[i] = false
+					fmt.Printf("false\n")
 				}
 			}
 		}
