@@ -5,10 +5,8 @@ package framework
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
-	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -34,7 +32,7 @@ func newStringReader(ss []string) io.Reader {
 	return reader
 }
 
-func CheckKubeExec(req *Request) (interface{}) {
+func CheckKubeExec(req *Request) interface{} {
 	config, err := clientcmd.BuildConfigFromFlags(req.masterURL, req.kubeconfigPath)
 	if err != nil {
 		return err
@@ -117,27 +115,26 @@ type Request struct {
 	Arg       string
 }
 
-func NewCmd() *cobra.Command {
-	var req Request
-	var icingaHost string
-	c := &cobra.Command{
-		Use:     "check_pod_exec",
-		Short:   "Check exit code of exec command on Kubernetes container",
-		Example: "",
+// func NewCmd() *cobra.Command {
+// 	var req Request
+// 	c := &cobra.Command{
+// 		Use:     "check_pod_exec",
+// 		Short:   "Check exit code of exec command on Kubernetes container",
+// 		Example: "",
 
-		Run: func(cmd *cobra.Command, args []string) {
-			flags.EnsureRequiredFlags(cmd, "kubeconfig", "arg")
+// 		Run: func(cmd *cobra.Command, args []string) {
+// 			flags.EnsureRequiredFlags(cmd, "kubeconfig", "arg")
 
-			req.Namespace = "toto"
-			req.Pod = "toto"
-			CheckKubeExec(&req)
-		},
-	}
+// 			req.Namespace = "toto"
+// 			req.Pod = "toto"
+// 			CheckKubeExec(&req)
+// 		},
+// 	}
 
-	c.Flags().StringVar(&req.masterURL, "master", req.masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
-	c.Flags().StringVar(&req.kubeconfigPath, "kubeconfig", req.kubeconfigPath, "Path to kubeconfig file with authorization information (the master location is set by the master flag).")
-	c.Flags().StringVarP(&req.Container, "container", "C", "", "Container name in specified pod")
-	c.Flags().StringVarP(&req.Command, "cmd", "c", "/bin/sh", "Exec command. [Default: /bin/sh]")
-	c.Flags().StringVarP(&req.Arg, "argv", "a", "", "Arguments for exec command. [Format: 'arg; arg; arg']")
-	return c
-}
+// 	c.Flags().StringVar(&req.masterURL, "master", req.masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
+// 	c.Flags().StringVar(&req.kubeconfigPath, "kubeconfig", req.kubeconfigPath, "Path to kubeconfig file with authorization information (the master location is set by the master flag).")
+// 	c.Flags().StringVarP(&req.Container, "container", "C", "", "Container name in specified pod")
+// 	c.Flags().StringVarP(&req.Command, "cmd", "c", "/bin/sh", "Exec command. [Default: /bin/sh]")
+// 	c.Flags().StringVarP(&req.Arg, "argv", "a", "", "Arguments for exec command. [Format: 'arg; arg; arg']")
+// 	return c
+// }
